@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: apps
+  name: notification-service
+  labels:
+    app: notification-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "8086"
+    spec:
+      containers:
+      - name: notification-service
+        image: sonyms2023/notification-service:2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8086
+        envFrom:
+        - configMapRef:
+            name: shop-config
+        - secretRef:
+            name: shop-secrets
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "k8s"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: apps
+  name: notification-service
+spec:
+  selector:
+    app: notification-service
+  ports:
+    - protocol: TCP
+      port: 8086
+      targetPort: 8086

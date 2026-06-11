@@ -1,0 +1,120 @@
+server:
+  port: 8085
+  shutdown: graceful
+  compression:
+    enabled: true
+    min-response-size: 1024
+
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: order-service
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 3000
+            readTimeout: 5000
+      circuitbreaker:
+        enabled: true
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/shop_db}
+    username: ${DB_USERNAME:shop_user}
+    password: ${DB_PASSWORD:shop_password}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    enabled: true
+    drop-first: false
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+        default_batch_fetch_size: 100
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9093}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: order-group
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - [traceId=%X{traceId:-}, spanId=%X{spanId:-}] - %msg%n"
+
+management:
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_URL:http://localhost:19411/api/v2/spans}
+  endpoints:
+    web:
+      exposure:
+        include: "health,prometheus,info"
+  tracing:
+    enabled: true
+    sampling:
+      probability: 0.1
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+    instances:
+      product-service:
+        baseConfig: default
+      cart-service:
+        baseConfig: default
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 3s
+
+---
+spring:
+  config:
+    activate:
+      on-profile: k8s
+eureka:
+  client:
+    enabled: false
+feign:
+  client:
+    product:
+      url: http://product-service:8083
+    cart:
+      url: http://cart-service:8084

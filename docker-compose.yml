@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  # PostgreSQL - Primary Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: shop-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: shop_user
+      POSTGRES_PASSWORD: shop_password
+      POSTGRES_DB: shop_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - shop-network
+
+  # Redis - Caching and Rate Limiting
+  redis:
+    image: redis:7-alpine
+    container_name: shop-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - shop-network
+
+  # Zookeeper - Required for Kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.4
+    container_name: shop-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - shop-network
+
+  # Kafka - Message Broker for Event-Driven Architecture
+  kafka:
+    image: confluentinc/cp-kafka:7.4.4
+    container_name: shop-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - shop-network
+
+  # Zipkin - Distributed Tracing Server
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: shop-zipkin
+    ports:
+      - "19411:9411"
+    networks:
+      - shop-network
+
+  # Prometheus - Metrics Scraping Server
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: shop-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - shop-network
+
+  # Grafana - Unified Observability Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: shop-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+      - zipkin
+    networks:
+      - shop-network
+
+  # Loki - Centralized Log Aggregation
+  loki:
+    image: grafana/loki:latest
+    container_name: shop-loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - shop-network
+
+  # Promtail - Scrapes Docker container logs and sends to Loki
+  promtail:
+    image: grafana/promtail:latest
+    container_name: shop-promtail
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers:/var/lib/docker/containers
+      - ./promtail-config.yml:/etc/promtail/promtail-config.yml
+    command: -config.file=/etc/promtail/promtail-config.yml
+    depends_on:
+      - loki
+    networks:
+      - shop-network
+
+volumes:
+  postgres-data:
+  redis-data:
+
+networks:
+  shop-network:
+    driver: bridge

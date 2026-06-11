@@ -1,0 +1,16 @@
+INSERT INTO products (name, description, price, stock_quantity, deleted, created_at, updated_at) VALUES 
+('Apple MacBook Air M2', 'Supercharged by M2, 13.6-inch Liquid Retina display', 1199.00, 20, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Dell XPS 13 Plus', '13.4" OLED Touch, 12th Gen Intel Core i7', 1499.00, 15, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Asus ROG Zephyrus G14', '14" WQXGA 120Hz, AMD Ryzen 9 6900HS', 1649.99, 10, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Sony Alpha a7 IV', '33MP Full-Frame Mirrorless Camera', 2498.00, 5, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Canon EOS R6', '20.1MP Full-Frame Mirrorless Camera', 2299.00, 8, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('LG C3 Series 65-Inch', 'OLED evo 4K Smart TV (2023)', 1696.99, 12, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Samsung S90C 65-Inch', 'OLED 4K Smart TV', 1597.99, 14, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Sonos Arc', 'Premium Smart Soundbar for TV, Movies, Music', 899.00, 25, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Bose Smart Soundbar 900', 'Dolby Atmos with Alexa Built-In', 899.00, 20, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('GoPro HERO12 Black', 'Waterproof Action Camera 5.3K60 Video', 399.00, 50, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('DJI Mini 4 Pro', 'Lightweight and Foldable Drone with 4K HDR', 759.00, 18, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Oculus Quest 3', 'Advanced All-in-One VR Headset', 499.00, 40, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Garmin Fenix 7X Sapphire Solar', 'Multisport GPS Smartwatch', 899.99, 15, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Apple Watch Ultra 2', 'Rugged Titanium Case, Precision GPS', 799.00, 30, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Steam Deck OLED', 'Portable PC Gaming Console, 512GB', 549.00, 45, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

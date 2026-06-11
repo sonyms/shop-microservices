@@ -1,0 +1,161 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shop-api-gateway
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sonyms/shop-microservices.git
+    targetRevision: HEAD
+    path: gitops/apps/api-gateway
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: apps
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shop-auth-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sonyms/shop-microservices.git
+    targetRevision: HEAD
+    path: gitops/apps/auth-service
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: apps
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shop-cart-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sonyms/shop-microservices.git
+    targetRevision: HEAD
+    path: gitops/apps/cart-service
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: apps
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shop-frontend
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sonyms/shop-microservices.git
+    targetRevision: HEAD
+    path: gitops/apps/frontend
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: apps
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shop-notification-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sonyms/shop-microservices.git
+    targetRevision: HEAD
+    path: gitops/apps/notification-service
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: apps
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shop-order-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sonyms/shop-microservices.git
+    targetRevision: HEAD
+    path: gitops/apps/order-service
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: apps
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shop-product-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sonyms/shop-microservices.git
+    targetRevision: HEAD
+    path: gitops/apps/product-service
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: apps
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shop-user-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sonyms/shop-microservices.git
+    targetRevision: HEAD
+    path: gitops/apps/user-service
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: apps
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shop-common
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sonyms/shop-microservices.git
+    targetRevision: HEAD
+    path: gitops/apps/common
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: apps
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
